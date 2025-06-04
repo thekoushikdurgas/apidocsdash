@@ -1,0 +1,1374 @@
+{
+  "source_identifier": "MyAPI_v1",
+  "file_last_modified_iso": "2024-06-04T10:00:00Z",
+  "implementation_status": {
+    "total": 20,
+    "implemented": 15
+  },
+  "toc_dictionary": {
+    "Authentication": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "User Registration": {
+          "level": 3,
+          "is_last": false,
+          "section": {
+            "content_text": "Handles user registration processes, allowing creation of new accounts with optional role specification."
+          },
+          "children": {
+            "Generic User Registration": {
+              "level": 4,
+              "is_last": true,
+              "section": {
+                "content_text": "Registers a new user in the system. If no specific user type is provided, it defaults to creating a 'customer' account."
+              },
+              "api_endpoints": [
+                {
+                  "endpoint": "POST /api/users/register",
+                  "request_body": {
+                    "email": "user@example.com",
+                    "password": "securePassword123",
+                    "first_name": "John",
+                    "last_name": "Doe",
+                    "phone_number": "+1234567890"
+                  },
+                  "curl_command": "curl -X POST http://localhost:8000/api/users/register -H \"Content-Type: application/json\" -H \"Accept: application/json\" -d '{\"email\": \"user@example.com\", \"password\": \"securePassword123\", \"first_name\": \"John\", \"last_name\": \"Doe\", \"phone_number\": \"+1234567890\"}'",
+                  "responses": {
+                    "success": {
+                      "status_code": 201,
+                      "description": "Created",
+                      "example": {
+                        "message": "User registered successfully. Please check your email to verify your account.",
+                        "data": {
+                          "user_id": "uuid-generated-by-server",
+                          "email": "user@example.com",
+                          "first_name": "John",
+                          "last_name": "Doe",
+                          "phone_number": "+1234567890",
+                          "user_type": "customer",
+                          "is_active": true,
+                          "is_verified": false,
+                          "created_at": "YYYY-MM-DDTHH:MM:SSZ",
+                          "updated_at": "YYYY-MM-DDTHH:MM:SSZ"
+                        }
+                      }
+                    },
+                    "error": {
+                      "status_code": 400,
+                      "description": "Bad Request",
+                      "example": {
+                        "error": {
+                          "code": "VALIDATION_ERROR",
+                          "message": "Input validation failed.",
+                          "details": [
+                            {
+                              "field": "email",
+                              "issue": "User with this email already exists."
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "Customer Specific Registration": {
+              "level": 4,
+              "is_last": true,
+              "section": {
+                "content_text": "Registers a new user with a 'customer' role, including customer-specific profile information."
+              },
+              "api_endpoints": [
+                {
+                  "endpoint": "POST /api/users/register/customer",
+                  "request_body": {
+                    "email": "customer@example.com",
+                    "password": "securePassword123",
+                    "first_name": "Jane",
+                    "last_name": "Smith",
+                    "phone_number": "+1987654321",
+                    "address": {
+                      "street": "123 Customer Lane",
+                      "city": "Clientville",
+                      "state": "CA",
+                      "zip_code": "90210",
+                      "country": "USA"
+                    }
+                  },
+                  "curl_command": "curl -X POST http://localhost:8000/api/users/register/customer -H \"Content-Type: application/json\" -H \"Accept: application/json\" -d '{\"email\": \"customer@example.com\", \"password\": \"securePassword123\", \"first_name\": \"Jane\", \"last_name\": \"Smith\", \"phone_number\": \"+1987654321\", \"address\": {\"street\": \"123 Customer Lane\", \"city\": \"Clientville\", \"state\": \"CA\", \"zip_code\": \"90210\", \"country\": \"USA\"}}'",
+                  "responses": {
+                    "success": {
+                      "status_code": 201,
+                      "description": "Created",
+                      "example": {
+                        "message": "User registered successfully. Please check your email to verify your account.",
+                        "data": {
+                          "user_id": "uuid-generated-by-server",
+                          "email": "customer@example.com",
+                          "first_name": "Jane",
+                          "last_name": "Smith",
+                          "phone_number": "+1987654321",
+                          "address": {
+                            "street": "123 Customer Lane",
+                            "city": "Clientville",
+                            "state": "CA",
+                            "zip_code": "90210",
+                            "country": "USA"
+                          },
+                          "user_type": "customer"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "Provider Specific Registration": {
+              "level": 4,
+              "is_last": true,
+              "section": {
+                "content_text": "Registers a new user with a 'provider' role, including provider-specific details like company name and service categories."
+              },
+              "api_endpoints": [
+                {
+                  "endpoint": "POST /api/users/register/provider",
+                  "request_body": {
+                    "email": "provider@example.com",
+                    "password": "securePasswordProvider123",
+                    "first_name": "Service",
+                    "last_name": "Pro",
+                    "phone_number": "+1555123456",
+                    "company_name": "Pro Services Ltd.",
+                    "service_categories": [
+                      "plumbing",
+                      "electrical"
+                    ],
+                    "business_license_id": "BIZLICENSE789",
+                    "address": {
+                      "street": "456 Provider Ave",
+                      "city": "Workville",
+                      "state": "NY",
+                      "zip_code": "10001",
+                      "country": "USA"
+                    }
+                  },
+                  "curl_command": "curl -X POST http://localhost:8000/api/users/register/provider -H \"Content-Type: application/json\" -H \"Accept: application/json\" -d '{\"email\": \"provider@example.com\", \"password\": \"securePasswordProvider123\", \"first_name\": \"Service\", \"last_name\": \"Pro\", \"phone_number\": \"+1555123456\", \"company_name\": \"Pro Services Ltd.\", \"service_categories\": [\"plumbing\", \"electrical\"], \"business_license_id\": \"BIZLICENSE789\", \"address\": {\"street\": \"456 Provider Ave\", \"city\": \"Workville\", \"state\": \"NY\", \"zip_code\": \"10001\", \"country\": \"USA\"}}'",
+                  "responses": {
+                    "success": {
+                      "status_code": 201,
+                      "description": "Created",
+                      "example": {
+                        "message": "Provider user registered successfully",
+                        "data": {
+                          "user_id": "uuid-generated-by-server",
+                          "email": "provider@example.com",
+                          "first_name": "Service",
+                          "last_name": "Pro",
+                          "phone_number": "+1555123456",
+                          "user_type": "provider",
+                          "company_name": "Pro Services Ltd.",
+                          "service_categories": [
+                            "plumbing",
+                            "electrical"
+                          ],
+                          "business_license_id": "BIZLICENSE789",
+                          "address": {
+                            "street": "456 Provider Ave",
+                            "city": "Workville",
+                            "state": "NY",
+                            "zip_code": "10001",
+                            "country": "USA"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "Admin Specific Registration": {
+              "level": 4,
+              "is_last": true,
+              "section": {
+                "content_text": "Registers a new admin user in the system, typically requiring elevated permissions."
+              },
+              "api_endpoints": [
+                {
+                  "endpoint": "POST /api/admins/register",
+                  "request_body": {
+                    "username": "new_admin_user",
+                    "email": "admin@example.com",
+                    "password": "securePassword123",
+                    "first_name": "Admin",
+                    "last_name": "User",
+                    "phone_number": "1234567890",
+                    "is_staff": true,
+                    "is_superuser": false
+                  },
+                  "curl_command": "curl -X POST http://localhost:8000/api/admins/register -H \"Content-Type: application/json\" -H \"Authorization: Bearer <SUPER_ADMIN_ACCESS_TOKEN>\" -d '{\"username\": \"new_admin_user\", \"email\": \"admin@example.com\", \"password\": \"securePassword123\", \"first_name\": \"Admin\", \"last_name\": \"User\", \"phone_number\": \"1234567890\", \"is_staff\": true, \"is_superuser\": false}'",
+                  "responses": {
+                    "success": {
+                      "status_code": 201,
+                      "description": "Created",
+                      "example": {
+                        "message": "Admin user registered successfully",
+                        "data": {
+                          "user_id": "uuid-generated-by-server",
+                          "email": "admin@example.com",
+                          "first_name": "Admin",
+                          "last_name": "User",
+                          "phone_number": "1234567890",
+                          "user_type": "admin",
+                          "is_staff": true,
+                          "is_superuser": false
+                        }
+                      }
+                    },
+                    "error": {
+                      "status_code": 400,
+                      "description": "Bad Request",
+                      "example": {
+                        "detail": {
+                          "email": [
+                            "admin with this email already exists."
+                          ],
+                          "username": [
+                            "A user with that username already exists."
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "User Logout": {
+          "level": 3,
+          "is_last": true,
+          "section": {
+            "content_text": "Logs out the currently authenticated user by invalidating their session or access token."
+          },
+          "api_endpoints": [
+            {
+              "endpoint": "POST /api/users/logout",
+              "request_body": {},
+              "curl_command": "curl -X POST http://localhost:8000/api/users/logout -H \"Authorization: Bearer <USER_ACCESS_TOKEN>\" -H \"Content-Type: application/json\" -d '{}'",
+              "responses": {
+                "success": {
+                  "status_code": 200,
+                  "description": "OK",
+                  "example": {
+                    "message": "Successfully logged out."
+                  }
+                },
+                "error": {
+                  "status_code": 401,
+                  "description": "Unauthorized",
+                  "example": {
+                    "detail": "Authentication credentials were not provided."
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "Access Token Management": {
+          "level": 3,
+          "is_last": false,
+          "section": {
+            "content_text": "Endpoints for managing user access tokens, such as listing, revoking, or refreshing them."
+          },
+          "children": {
+            "List User's Access Tokens": {
+              "level": 4,
+              "is_last": false,
+              "section": {
+                "content_text": "Retrieves a list of active access tokens or sessions for the currently authenticated user."
+              },
+              "api_endpoints": [
+                {
+                  "endpoint": "GET /api/users/tokens",
+                  "request_body": null,
+                  "curl_command": "curl -X GET http://localhost:8000/api/users/tokens -H \"Authorization: Bearer <USER_ACCESS_TOKEN>\"",
+                  "responses": {
+                    "success": {
+                      "status_code": 200,
+                      "description": "OK",
+                      "example": {
+                        "tokens": [
+                          {
+                            "id": "token_id_1",
+                            "device_info": "Chrome on Windows 10",
+                            "ip_address": "192.168.1.10",
+                            "last_used_at": "YYYY-MM-DDTHH:MM:SSZ",
+                            "created_at": "YYYY-MM-DDTHH:MM:SSZ"
+                          }
+                        ],
+                        "pagination": {
+                          "count": 2,
+                          "next": null,
+                          "previous": null
+                        }
+                      }
+                    },
+                    "error": {
+                      "status_code": 401,
+                      "description": "Unauthorized",
+                      "example": {
+                        "detail": "Authentication credentials were not provided."
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "Revoke Specific Access Token": {
+              "level": 4,
+              "is_last": false,
+              "section": {
+                "content_text": "Allows a user to revoke a specific access token or session."
+              },
+              "api_endpoints": [
+                {
+                  "endpoint": "DELETE /api/users/tokens/{token_id}",
+                  "path_parameters": {
+                    "token_id": "The unique identifier of the access token/session to be revoked."
+                  },
+                  "request_body": null,
+                  "curl_command": "curl -X DELETE http://localhost:8000/api/users/tokens/token_id_to_revoke -H \"Authorization: Bearer <USER_ACCESS_TOKEN>\"",
+                  "responses": {
+                    "success": {
+                      "status_code": 204,
+                      "description": "No Content"
+                    },
+                    "error": {
+                      "status_code": 401,
+                      "description": "Unauthorized",
+                      "example": {
+                        "detail": "Authentication credentials were not provided."
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            "Refresh JWT Access Token": {
+              "level": 4,
+              "is_last": true,
+              "section": {
+                "content_text": "Allows a client to obtain a new JWT access token using a valid refresh token."
+              },
+              "api_endpoints": [
+                {
+                  "endpoint": "POST /api/token/refresh/",
+                  "request_body": {
+                    "refresh": "<USER_REFRESH_TOKEN>"
+                  },
+                  "curl_command": "curl -X POST http://localhost:8000/api/token/refresh/ -H \"Content-Type: application/json\" -d '{\"refresh\": \"<USER_REFRESH_TOKEN>\"}'",
+                  "responses": {
+                    "success": {
+                      "status_code": 200,
+                      "description": "OK",
+                      "example": {
+                        "access": "<NEW_ACCESS_TOKEN>",
+                        "refresh": "<MAYBE_NEW_REFRESH_TOKEN>"
+                      }
+                    },
+                    "error": {
+                      "status_code": 401,
+                      "description": "Unauthorized",
+                      "example": {
+                        "detail": "Token is invalid or expired"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "User Management": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Generic User Endpoints": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Manage Own Profile": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Upload/Change Own Avatar": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Deactivate Own Account": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Change Own Password": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Customer Specific Endpoints": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Manage Own Customer Profile": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        },
+        "Provider Specific Endpoints": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Manage Own Provider Profile": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        },
+        "Admin Specific Endpoints": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Manage Own Admin Profile": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        },
+        "User Search": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "General User Search": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "User Search by Phone Number": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        }
+      }
+    },
+    "Services and Service Requests": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Public Service and Category Endpoints": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Provider Service Management": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Public Service Request Endpoints": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Service Requests (Customer)": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Service Requests (Admin)": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        }
+      }
+    },
+    "Products": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Product Categories": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Products (Individual)": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        }
+      }
+    },
+    "Bids": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Provider Bidding Actions": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Bids - Admin View": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        }
+      }
+    },
+    "Bookings": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Create Booking": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "View Booking Details": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Update Booking Status": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "List Customer Bookings": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "List Provider Bookings": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "List Admin Bookings": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        }
+      }
+    },
+    "Calendar Integration": {
+      "level": 2,
+      "is_last": true,
+      "section": {},
+      "api_endpoints": []
+    },
+    "Payment Processing": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Create Payment Intent": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Confirm Payment": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Retrieve Payment Details": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "List Payments (Customer/Provider/Admin)": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Issue Refund (Admin)": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Payment Gateway Accounts (Provider)": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Link Payment Gateway Account": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "View Payment Gateway Account Details": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Update Payment Gateway Account": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Remove Payment Gateway Account": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        },
+        "Payouts (Provider/Admin)": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Request Payout (Provider)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "View Payout History (Provider/Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Process Payouts (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "View Payout Settings (Provider/Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        }
+      }
+    },
+    "Messaging": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Message Threads": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Create Message Thread": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "List User Message Threads": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "View Message Thread Details": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Archive Message Thread": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Mark Thread as Read/Unread": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        },
+        "Individual Messages": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Send Message in Thread": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "List Messages in Thread": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Edit Message": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        }
+      }
+    },
+    "Notifications (HTTP)": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "List User Notifications": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Mark Notification as Read": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Mark All Notifications as Read": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Delete Notification": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Notification Settings": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Get Notification Settings": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Update Notification Settings": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        },
+        "AI Suggestions and Feedback": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "AI Suggestions": {
+              "level": 4,
+              "is_last": false,
+              "sections": [],
+              "children": {
+                "Get AI Suggestions for Service Request": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Get AI Suggestions for Pricing": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Get AI Suggestions for Descriptions": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "AI Feedback Logs": {
+                  "level": 5,
+                  "is_last": false,
+                  "sections": [],
+                  "children": {
+                    "Submit Feedback on AI Suggestion": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "List AI Feedback Logs (Admin)": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    }
+                  }
+                }
+              }
+            },
+            "Verifications (User Identity, etc.)": {
+              "level": 4,
+              "is_last": false,
+              "sections": [],
+              "children": {
+                "Submit Verification Document": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Check Verification Status": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                }
+              }
+            },
+            "Admin Verification Actions": {
+              "level": 4,
+              "is_last": false,
+              "sections": [],
+              "children": {
+                "List Pending Verifications (Admin)": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Approve/Reject Verification (Admin)": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                }
+              }
+            },
+            "Reviews": {
+              "level": 4,
+              "is_last": false,
+              "sections": [],
+              "children": {
+                "Submit Review for a Service/Provider": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "View Reviews for a Service/Provider": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "View Reviews by a User": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Update Own Review": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Delete Own Review": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                }
+              }
+            },
+            "Admin Review Management": {
+              "level": 4,
+              "is_last": false,
+              "sections": [],
+              "children": {
+                "List All Reviews (Admin)": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Moderate/Delete Review (Admin)": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                }
+              }
+            },
+            "Sync (Offline Functionality)": {
+              "level": 4,
+              "is_last": false,
+              "sections": [],
+              "children": {
+                "Get Data for Offline Sync": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Push Offline Changes to Server": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Get Sync Status": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                }
+              }
+            },
+            "Analytics and Admin Management": {
+              "level": 4,
+              "is_last": false,
+              "sections": [],
+              "children": {
+                "Analytics Reports": {
+                  "level": 5,
+                  "is_last": false,
+                  "sections": [],
+                  "children": {
+                    "Generate User Activity Report": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "Generate Service Popularity Report": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "Generate Financial Report": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "View System Performance Metrics": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    }
+                  }
+                },
+                "Admin User Management": {
+                  "level": 5,
+                  "is_last": false,
+                  "sections": [],
+                  "children": {
+                    "List All Users (Admin)": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "View User Details (Admin)": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "Activate/Deactivate User (Admin)": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "Assign User Roles (Admin)": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    }
+                  }
+                },
+                "Admin Service Management": {
+                  "level": 5,
+                  "is_last": false,
+                  "sections": [],
+                  "children": {
+                    "List All Services (Admin)": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "Update Service Details (Admin)": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    },
+                    "Manage Service Categories (Admin)": {
+                      "level": 6,
+                      "is_last": true,
+                      "section": {},
+                      "api_endpoints": []
+                    }
+                  }
+                }
+              }
+            },
+            "WebSocket APIs": {
+              "level": 4,
+              "is_last": false,
+              "sections": [],
+              "children": {
+                "Real-time Notifications (WebSocket)": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Real-time Messaging (WebSocket)": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                },
+                "Real-time Booking Updates (WebSocket)": {
+                  "level": 5,
+                  "is_last": true,
+                  "section": {},
+                  "api_endpoints": []
+                }
+              }
+            },
+            "Health Checks": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        }
+      }
+    },
+    "Verifications (User Identity, etc.)": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Submit Verification Document": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Check Verification Status": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Admin Verification Actions": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "List Pending Verifications (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Approve/Reject Verification (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        }
+      }
+    },
+    "Reviews": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Submit Review for a Service/Provider": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "View Reviews for a Service/Provider": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "View Reviews by a User": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Update Own Review": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Delete Own Review": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Admin Review Management": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "List All Reviews (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Moderate/Delete Review (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        }
+      }
+    },
+    "Sync (Offline Functionality)": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Get Data for Offline Sync": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Push Offline Changes to Server": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Get Sync Status": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        }
+      }
+    },
+    "Analytics and Admin Management": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Analytics Reports": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "Generate User Activity Report": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Generate Service Popularity Report": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Generate Financial Report": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "View System Performance Metrics": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        },
+        "Admin User Management": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "List All Users (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "View User Details (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Activate/Deactivate User (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Assign User Roles (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        },
+        "Admin Service Management": {
+          "level": 3,
+          "is_last": false,
+          "sections": [],
+          "children": {
+            "List All Services (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Update Service Details (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            },
+            "Manage Service Categories (Admin)": {
+              "level": 4,
+              "is_last": true,
+              "section": {},
+              "api_endpoints": []
+            }
+          }
+        }
+      }
+    },
+    "WebSocket APIs": {
+      "level": 2,
+      "is_last": false,
+      "sections": [],
+      "children": {
+        "Real-time Notifications (WebSocket)": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Real-time Messaging (WebSocket)": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        },
+        "Real-time Booking Updates (WebSocket)": {
+          "level": 3,
+          "is_last": true,
+          "section": {},
+          "api_endpoints": []
+        }
+      }
+    },
+    "Health Checks": {
+      "level": 2,
+      "is_last": true,
+      "section": {},
+      "api_endpoints": []
+    }
+  }
+}
